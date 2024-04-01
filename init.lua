@@ -870,5 +870,51 @@ require('lazy').setup({
   },
 })
 
+
+-- 
+-- Some of my custom stuff
+-- 
+vim.cmd([[
+" Cleanup routines
+function CleanupFile()
+  let save_cursor = getcurpos()
+  silent! %s#\($\n\s*\)\+\%$##
+  silent! %s/\s*$//
+  call setpos('.', save_cursor)
+endfunction
+
+function ClangFormat()
+  if &filetype == 'c' || &filetype == 'cpp'
+    let save_cursor = getcurpos()
+    %!clang-format
+    call setpos('.', save_cursor)
+  endif
+endfunction
+
+" key remaps
+" Map ; to : to avoid pressing a shift key
+map ; :
+map ! :!
+" Map jj for <Esc> in insert mode only
+inoremap jj <Esc>
+
+cnoremap %% <C-R>=expand('%:h').'/'<cr>
+map <leader>ew :e %%
+map <leader>li :set list!<cr>
+map <leader>cl :call CleanupFile()<cr>
+map <leader>fr :call ClangFormat()<cr>
+
+" AutoCommands
+if has('autocmd')
+  autocmd Filetype c,md,vim,go,cmake,cpp,fortran,java,php,ruby,sh,python autocmd BufWritePre <buffer> :call CleanupFile()
+  autocmd FileType c,cpp,vim,yaml,sh,cmake setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+  autocmd FileType fortran,javascript,java,go,python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+  autocmd FileType mail setlocal expandtab softtabstop=2 textwidth=70 comments+=fb:* comments-=mb:*
+  autocmd BufNewFile,BufRead *.make setlocal filetype=make
+  autocmd BufNewFile,BufRead *.m setlocal filetype=matlab tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+  autocmd BufNewFile,BufRead *linux*.c\|.h setlocal tabstop=8 shiftwidth=8 noexpandtab
+end
+]])
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
