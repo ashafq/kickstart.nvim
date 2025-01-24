@@ -290,6 +290,12 @@ require('lazy').setup({
     end,
   },
 
+  { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
+
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+  },
   -- NOTE: Plugins can specify dependencies.
   --
   -- The dependencies are proper plugin specifications as well - anything
@@ -870,11 +876,16 @@ require('lazy').setup({
   },
 })
 
+require('lualine').setup {
+  options = {
+    theme = 'catppuccin',
+  },
+}
 
--- 
+--
 -- Some of my custom stuff
--- 
-vim.cmd([[
+--
+vim.cmd [[
 " Cleanup routines
 function CleanupFile()
   let save_cursor = getcurpos()
@@ -903,6 +914,9 @@ map <leader>ew :e %%
 map <leader>li :set list!<cr>
 map <leader>cl :call CleanupFile()<cr>
 map <leader>fr :call ClangFormat()<cr>
+" Visual mode
+vnoremap < <gv
+vnoremap > >gv
 
 " AutoCommands
 if has('autocmd')
@@ -913,8 +927,8 @@ if has('autocmd')
   autocmd BufNewFile,BufRead *.make setlocal filetype=make
   autocmd BufNewFile,BufRead *.m setlocal filetype=matlab tabstop=4 shiftwidth=4 softtabstop=4 expandtab
   autocmd BufNewFile,BufRead *linux*.c\|.h setlocal tabstop=8 shiftwidth=8 noexpandtab
+  autocmd BufNewFile,BufRead *.typ setlocal filetype=typst
 end
-]])
+]]
 
 -- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
