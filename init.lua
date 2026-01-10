@@ -1087,4 +1087,11 @@ if has('autocmd')
 end
 ]]
 
+--
+-- If using neovide
+--
+if vim.g.neovide then
+  -- Disable all cursor animation
+  vim.g.neovide_cursor_animation_length = 0
+end
 -- The line beneath this is called `modeline`. See `:help modeline`
